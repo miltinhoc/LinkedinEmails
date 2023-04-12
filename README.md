@@ -2,7 +2,6 @@
 Searches for employees of a company on linkedin.
 
 ## How to use
-
 | Argument | Description |
 | ------------- | ------------- |
 | -e | Your Linkedin email |
