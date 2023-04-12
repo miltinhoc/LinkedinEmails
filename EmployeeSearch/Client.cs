@@ -12,9 +12,10 @@ namespace EmployeeSearch
 
         private static readonly string JsGetEmployeeNames = "Array.from(document.querySelectorAll('.entity-result__title-text a span[dir] span[aria-hidden]')).map(a => a.innerText);";
         private static readonly string JsGetLastPage = "() => {var elem = document.querySelectorAll('.artdeco-pagination__indicator.artdeco-pagination__indicator--number');return elem[elem.length-1].getAttribute('data-test-pagination-page-btn');}";
-        private static readonly string JsGetSearchPageLink = "() => {return document.querySelector('.org-top-card-secondary-content__see-all-link').href;}";
+        private static readonly string JsGetSearchPageLink = "() => {return document.querySelector('{0}').href;}";
         
         private static readonly string EmployeesLinkClassName = ".org-top-card-secondary-content__see-all-link";
+        private static readonly string EmployeesLinkAllClassName = ".org-top-card-secondary-content__see-all-independent-link a";
         private static readonly string LinkedinNavbarClassName = "#global-nav-search";
         private static readonly string ResultEntityClassName = ".entity-result__item";
 
@@ -35,6 +36,11 @@ namespace EmployeeSearch
                 Width = 1200,
                 Height = 900
             };
+        }
+
+        private string GenerateJsSearchPage(string selector)
+        {
+            return $"() => {{return document.querySelector('{selector}').href;}}";
         }
 
         /// <summary>
@@ -63,14 +69,36 @@ namespace EmployeeSearch
         /// <returns></returns>
         public async Task SetCompanyPageAsync(string companyName)
         {
-            if (!await VisitAndWaitAsync($"https://www.linkedin.com/company/{companyName}", EmployeesLinkClassName))
+            await _browserPage.GoToAsync($"https://www.linkedin.com/company/{companyName}");
+
+            if (await WaitFor(EmployeesLinkAllClassName))
             {
-                Logger.Log.Print("failed to find company employees page", Logger.LogType.ERROR);
+                _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(EmployeesLinkAllClassName));
+                Logger.Log.Print("found company employees page", Logger.LogType.INFO);
                 return;
             }
 
-            _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(JsGetSearchPageLink);
-            Logger.Log.Print("found company employees page", Logger.LogType.INFO);
+            if (await WaitFor(EmployeesLinkClassName))
+            {
+                _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(EmployeesLinkClassName));
+                Logger.Log.Print("found company employees page", Logger.LogType.INFO);
+                return;
+            }
+
+            Logger.Log.Print("failed to find company employees page", Logger.LogType.INFO);
+        }
+
+        private async Task<bool> WaitFor(string selector, int timeout = 10000)
+        {
+            try
+            {
+                await _browserPage.WaitForSelectorAsync(selector, new WaitForSelectorOptions { Timeout = timeout });
+                return true;
+            }catch(Exception ex)
+            {
+                Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
+                return false;
+            }
         }
 
         /// <summary>
@@ -155,12 +183,12 @@ namespace EmployeeSearch
         /// <param name="url"></param>
         /// <param name="selector"></param>
         /// <returns>True if it visits the webpage successfully and finds the selector, otherwise false</returns>
-        private async Task<bool> VisitAndWaitAsync(string url, string selector)
+        private async Task<bool> VisitAndWaitAsync(string url, string selector, int timeout = 15000)
         {
             try
             {
                 await _browserPage.GoToAsync(url);
-                await _browserPage.WaitForSelectorAsync(selector);
+                await _browserPage.WaitForSelectorAsync(selector, new WaitForSelectorOptions { Timeout = timeout });
             }
             catch (Exception ex)
             {
