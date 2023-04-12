@@ -38,7 +38,7 @@ namespace EmployeeSearch
             };
         }
 
-        private string GenerateJsSearchPage(string selector)
+        private static string GenerateJsSearchPage(string selector)
         {
             return $"() => {{return document.querySelector('{selector}').href;}}";
         }
@@ -82,7 +82,6 @@ namespace EmployeeSearch
         public async Task SetCompanyPageAsync(string companyName)
         {
             await _browserPage.GoToAsync($"https://www.linkedin.com/company/{companyName}");
-
             bool foundCompanyEmployeesPage = await FindCompanyEmployeesPageAsync(EmployeesLinkAllClassName) || await FindCompanyEmployeesPageAsync(EmployeesLinkClassName);
 
             if (!foundCompanyEmployeesPage)
