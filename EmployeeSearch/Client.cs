@@ -49,6 +49,7 @@ namespace EmployeeSearch
         /// <returns></returns>
         public async Task InitAsync()
         {
+            Logger.Log.Print("initializing...", Logger.LogType.INFO);
             await _browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
@@ -61,6 +62,17 @@ namespace EmployeeSearch
             Logger.Log.Print("initialized with success", Logger.LogType.INFO);
         }
 
+        private async Task<bool> FindCompanyEmployeesPageAsync(string className)
+        {
+            if (await WaitFor(className))
+            {
+                _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(className));
+                Logger.Log.Print("found company employees page", Logger.LogType.INFO);
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Navigates to a LinkedIn company page based on the provided companyName, 
         /// waits for the employees link to load, and then retrieves and stores the company employees search page link
@@ -71,23 +83,20 @@ namespace EmployeeSearch
         {
             await _browserPage.GoToAsync($"https://www.linkedin.com/company/{companyName}");
 
-            if (await WaitFor(EmployeesLinkAllClassName))
-            {
-                _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(EmployeesLinkAllClassName));
-                Logger.Log.Print("found company employees page", Logger.LogType.INFO);
-                return;
-            }
+            bool foundCompanyEmployeesPage = await FindCompanyEmployeesPageAsync(EmployeesLinkAllClassName) || await FindCompanyEmployeesPageAsync(EmployeesLinkClassName);
 
-            if (await WaitFor(EmployeesLinkClassName))
+            if (!foundCompanyEmployeesPage)
             {
-                _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(EmployeesLinkClassName));
-                Logger.Log.Print("found company employees page", Logger.LogType.INFO);
-                return;
+                Logger.Log.Print("failed to find company employees page", Logger.LogType.INFO);
             }
-
-            Logger.Log.Print("failed to find company employees page", Logger.LogType.INFO);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
         private async Task<bool> WaitFor(string selector, int timeout = 10000)
         {
             try

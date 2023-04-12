@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>EmployeeSearch</RootNamespace>
     <AssemblyName>EmployeeSearch</AssemblyName>
+    <Configurations>Debug;Release;publish</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,6 +15,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
     <NoWarn>1701;1702;8618</NoWarn>
   </PropertyGroup>
 
