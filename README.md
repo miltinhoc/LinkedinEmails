@@ -1,6 +1,7 @@
 # EmployeeSearcher
 ![employeessearch](https://user-images.githubusercontent.com/26238419/231571633-27d6c809-3677-48bd-8fb0-08ed57591d94.png)
-Searches for employees of a company on linkedin using [PuppeteerSharp](https://github.com/hardkoded/puppeteer-sharp).
+Searches for employees of a company on linkedin using [PuppeteerSharp](https://github.com/hardkoded/puppeteer-sharp).<br />
+It's possible to create builds for Windows, Linux and macOS since the project is done in .NET Core 6.
 
 ## How to use
 | Argument | Description |
