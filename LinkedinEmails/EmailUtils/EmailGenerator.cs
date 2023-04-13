@@ -1,6 +1,6 @@
-﻿using EmployeeSearch.Model;
+﻿using LinkedinEmails.Model;
 
-namespace EmployeeSearch.EmailUtils
+namespace LinkedinEmails.EmailUtils
 {
     public class EmailGenerator
     {

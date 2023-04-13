@@ -1,6 +1,6 @@
-﻿using EmployeeSearch.CommandLine;
+﻿using LinkedinEmails.CommandLine;
 
-namespace EmployeeSearch
+namespace LinkedinEmails
 {
     internal class Program
     {

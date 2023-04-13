@@ -1,10 +1,10 @@
-﻿using EmployeeSearch.EmailUtils;
-using EmployeeSearch.Model;
+﻿using LinkedinEmails.EmailUtils;
+using LinkedinEmails.Model;
 using Newtonsoft.Json;
 using PuppeteerSharp;
 using System.Text.RegularExpressions;
 
-namespace EmployeeSearch
+namespace LinkedinEmails
 {
     public class Client
     {

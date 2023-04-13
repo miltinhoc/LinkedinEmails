@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace EmployeeSearch.Logger
+namespace LinkedinEmails.Logger
 {
     /// <summary>
     /// 

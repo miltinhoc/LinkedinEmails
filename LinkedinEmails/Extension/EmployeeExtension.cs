@@ -1,4 +1,4 @@
-﻿namespace EmployeeSearch.Extension
+﻿namespace LinkedinEmails.Extension
 {
     public static class EmployeeExtension
     {

@@ -5,8 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>EmployeeSearch</RootNamespace>
-    <AssemblyName>EmployeeSearch</AssemblyName>
+    <RootNamespace>LinkedinEmails</RootNamespace>
+    <AssemblyName>LinkedinEmails</AssemblyName>
     <Configurations>Debug;Release;publish</Configurations>
   </PropertyGroup>
 

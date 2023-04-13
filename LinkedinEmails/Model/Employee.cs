@@ -1,6 +1,6 @@
-﻿using EmployeeSearch.Extension;
+﻿using LinkedinEmails.Extension;
 
-namespace EmployeeSearch.Model
+namespace LinkedinEmails.Model
 {
     public class Employee
     {

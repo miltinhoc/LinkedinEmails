@@ -1,4 +1,4 @@
-﻿namespace EmployeeSearch.Model
+﻿namespace LinkedinEmails.Model
 {
     public class EmployeeDTO
     {
