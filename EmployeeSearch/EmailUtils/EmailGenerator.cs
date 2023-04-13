@@ -1,31 +1,33 @@
 ﻿using EmployeeSearch.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeSearch.EmailUtils
 {
     public class EmailGenerator
     {
         private readonly string _domain;
-        private readonly List<Employee> _employees;
-        private readonly List<Email> _emails;
 
-        public EmailGenerator(string domain, List<Employee> employees)
+        public EmailGenerator(string domain)
         {
             _domain = domain;
-            _employees = employees;
         }
 
-        public void Generate()
+        public List<EmployeeDTO> Generate(List<Employee> employees)
         {
-            foreach (Employee employee in _employees)
+            List<EmployeeDTO> employeesDTO = new List<EmployeeDTO>();
+
+            foreach (Employee employee in employees)
             {
                 List<string> temporary = new();
 
+                temporary.Add(GetEmail(employee.FirstName, employee.LastNameLetter.ToString()));
+                temporary.Add(GetEmail(employee.FirstName));
+                temporary.Add(GetEmail(employee.LastName));
+                temporary.Add(GetEmail(employee.FirstName, employee.LastName));
+
+                employeesDTO.Add(new EmployeeDTO(employee.FullName, temporary));
             }
+
+            return employeesDTO;
         }
 
         private string GetEmail(string part)

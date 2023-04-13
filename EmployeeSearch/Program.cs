@@ -10,16 +10,23 @@ namespace EmployeeSearch
 
             if (processor.ParseArguments(args))
             {
-                Client client = new();
+                Client client = new(processor.Domain);
                 await client.InitAsync();
 
                 if (await client.TryLoginAsync(processor.Email, processor.Password))
                 {
-                    await client.SetCompanyPageAsync(processor.CompanyName);
-                    await client.SetSearchLastPageAsync();
+                    try
+                    {
+                        await client.SetCompanyPageAsync(processor.CompanyName);
+                        await client.SetSearchLastPageAsync();
+                        await client.SearchLoopAsync();
 
-                    await client.SearchLoopAsync();
-                    client.SaveFile();
+                        client.GenerateAndSaveEmails();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
+                    }
                 }
             }
         }

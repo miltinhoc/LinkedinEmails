@@ -1,10 +1,8 @@
-﻿using EmployeeSearch.Model;
-
-namespace EmployeeSearch.Extension
+﻿namespace EmployeeSearch.Extension
 {
     public static class EmployeeExtension
     {
-        private static readonly Dictionary<string, string> Chars = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> Chars = new()
         {
             { "àáâãäå", "a" },
             { "èéêë", "e" },
@@ -13,15 +11,27 @@ namespace EmployeeSearch.Extension
             { "ùúûü", "u" },
             { "ñ", "n" },
             { "ýÿ", "y" },
-            { "ç", "c" }
+            { "ç", "c" },
+            { ",.", "" }
         };
 
-        public static void CleanSpecialCharacters(this Employee employee)
+        public static string CleanSpecialCharacters(this string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
+
             foreach (KeyValuePair<string, string> kvp in Chars)
             {
-                employee.FullName = new string(employee.FullName.Select(c => kvp.Key.Contains(c) ? kvp.Value.ToCharArray()[0] : c).ToArray());
+                try
+                {
+                    value = new string(value.Select(c => kvp.Key.Contains(c) ? kvp.Value[0] : c).ToArray());
+                }
+                catch { }
             }
+
+            return value;
         }
     }
 }
