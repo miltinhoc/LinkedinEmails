@@ -6,6 +6,7 @@ namespace LinkedinEmails
     {
         static async Task Main(string[] args)
         {
+            Header.Draw();
             CommandLineProcessor processor = new();
 
             if (processor.ParseArguments(args))
@@ -28,6 +29,8 @@ namespace LinkedinEmails
                         Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
                     }
                 }
+
+                await client.Close();
             }
         }
     }

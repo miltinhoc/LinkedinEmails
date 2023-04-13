@@ -24,7 +24,7 @@ namespace LinkedinEmails.CommandLine
         {
             if (args.Length != 4)
             {
-                Console.WriteLine($"Invalid number of arguments. {_usage}");
+                Console.WriteLine($" [*] Invalid number of arguments. {_usage}");
                 return false;
             }
 
@@ -51,7 +51,7 @@ namespace LinkedinEmails.CommandLine
 
             if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(CompanyName) || string.IsNullOrEmpty(Domain))
             {
-                Console.WriteLine($"Missing required argument(s). {_usage}");
+                Console.WriteLine($" [*] Missing required argument(s). {_usage}");
                 return false;
             }
 

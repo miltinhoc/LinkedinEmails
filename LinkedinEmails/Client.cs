@@ -44,6 +44,11 @@ namespace LinkedinEmails
             };
         }
 
+        public async Task Close()
+        {
+            await _browser.CloseAsync();
+        }
+
         /// <summary>
         /// 
         /// </summary>
