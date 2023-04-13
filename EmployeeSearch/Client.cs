@@ -12,7 +12,6 @@ namespace EmployeeSearch
 
         private static readonly string JsGetEmployeeNames = "Array.from(document.querySelectorAll('.entity-result__title-text a span[dir] span[aria-hidden]')).map(a => a.innerText);";
         private static readonly string JsGetLastPage = "() => {var elem = document.querySelectorAll('.artdeco-pagination__indicator.artdeco-pagination__indicator--number');return elem[elem.length-1].getAttribute('data-test-pagination-page-btn');}";
-        private static readonly string JsGetSearchPageLink = "() => {return document.querySelector('{0}').href;}";
         
         private static readonly string EmployeesLinkClassName = ".org-top-card-secondary-content__see-all-link";
         private static readonly string EmployeesLinkAllClassName = ".org-top-card-secondary-content__see-all-independent-link a";
