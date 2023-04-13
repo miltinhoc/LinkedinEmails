@@ -89,7 +89,7 @@ namespace EmployeeSearch
             await _browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
-                Headless = false,
+                Headless = true,
                 DefaultViewport = _viewPortOptions
             });
 
