@@ -44,6 +44,6 @@ options:
 	-e <email>		your linkedin account email
 	-p password>		your linkedin account password
 	-c <company name>	linkedin company email 
-	-d <company domain>	company's email domain	
+	-d <company domain>	email domain	
 ```
 
