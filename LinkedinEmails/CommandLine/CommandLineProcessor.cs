@@ -7,7 +7,7 @@ namespace LinkedinEmails.CommandLine
     /// </summary>
     public class CommandLineProcessor
     {
-        private readonly string _usage = "Usage: EmployeeSearch.exe -e=<email> -p=<password> -c=<companyName> -d=<domain>";
+        private readonly string _usage = " [*] Usage: LinkedinEmails [-options]";
         public string Email { get; private set; }
         public string Password { get; private set; }
         public string CompanyName { get; private set; }
@@ -22,27 +22,33 @@ namespace LinkedinEmails.CommandLine
         /// <returns>True if all the arguments are valid and correctly formatted, and False otherwise</returns>
         public bool ParseArguments(string[] args)
         {
-            if (args.Length != 4)
+            if (args.Length == 1 && (args[0] == "-h"))
             {
-                Console.WriteLine($" [*] Invalid number of arguments. {_usage}");
+                ShowHelp();
                 return false;
             }
 
-            foreach (string arg in args)
+            if (args.Length != 8)
             {
-                switch (arg)
+                Console.WriteLine($" [*] Invalid number of arguments.\n{_usage}");
+                return false;
+            }
+
+            for (int i = 0; i < args.Length; i += 2)
+            {
+                switch (args[i])
                 {
-                    case string temp when temp.StartsWith("-e="):
-                        Email = arg.Substring(3);
+                    case "-e":
+                        Email = args[i + 1];
                         break;
-                    case string temp when temp.StartsWith("-p="):
-                        Password = arg.Substring(3);
+                    case "-p":
+                        Password = args[i + 1];
                         break;
-                    case string temp when temp.StartsWith("-c="):
-                        CompanyName = arg.Substring(3);
+                    case "-c":
+                        CompanyName = args[i + 1];
                         break;
-                    case string temp when temp.StartsWith("-d="):
-                        Domain = arg.Substring(3);
+                    case "-d":
+                        Domain = args[i + 1];
                         break;
                     default:
                         return false;
@@ -51,11 +57,24 @@ namespace LinkedinEmails.CommandLine
 
             if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(CompanyName) || string.IsNullOrEmpty(Domain))
             {
-                Console.WriteLine($" [*] Missing required argument(s). {_usage}");
+                Console.WriteLine($" [*] Missing required argument(s).\n{_usage}");
                 return false;
             }
 
             return true;
+        }
+
+        private void ShowHelp()
+        {
+            string c = @"Usage: LinkedinEmails [-options]
+
+options:
+	-e <email>		your linkedin account email
+	-p password>		your linkedin account password
+	-c <company name>	linkedin company email 
+	-d <company domain>	company's email domain	";
+
+            Console.WriteLine(c);
         }
     }
 }

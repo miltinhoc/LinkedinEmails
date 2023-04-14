@@ -255,7 +255,7 @@ namespace LinkedinEmails
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="list"></param>
+        /// <param name="list">Employees full name list</param>
         private void AddEmployees(List<string> list)
         {
             foreach (string employee in list)
@@ -289,7 +289,7 @@ namespace LinkedinEmails
         /// <summary>
         /// Saves Employees list to file
         /// </summary>
-        public static void SaveFile<T>(List<T> obj)
+        private static void SaveFile<T>(List<T> obj)
         {
             string filename = $"emails-{DateTime.Now.ToString("yyyy-dd-M-HH-mm-ss")}.json";
 

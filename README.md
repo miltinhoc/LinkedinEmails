@@ -36,11 +36,14 @@ dotnet publish --configuration Release --runtime linux-x64
 If you want to build for other platform, check the official list of available options from microsoft:
 [.NET RID Catalog](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog)
 
-## Arguments
+## Usage
+```bash
+Usage: LinkedinEmails [-options]
 
-| Argument | Description |
-| ------------- | ------------- |
-| -e | Your Linkedin email |
-| -p | Your Linkedin password |
-| -c | This is the company name, you can find this value by visiting the company's page and checking the URL. Example: https://www.linkedin.com/company/twitter/ |
-| -d | The company's domain |
+options:
+	-e <email>		your linkedin account email
+	-p password>		your linkedin account password
+	-c <company name>	linkedin company email 
+	-d <company domain>	company's email domain	
+```
+

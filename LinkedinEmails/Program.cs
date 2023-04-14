@@ -6,11 +6,12 @@ namespace LinkedinEmails
     {
         static async Task Main(string[] args)
         {
-            Header.Draw();
             CommandLineProcessor processor = new();
 
             if (processor.ParseArguments(args))
             {
+                Header.Draw();
+
                 Client client = new(processor.Domain);
                 await client.InitAsync();
 
