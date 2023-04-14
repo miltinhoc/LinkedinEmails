@@ -90,7 +90,7 @@ namespace LinkedinEmails
 
             if (revisions.Count == 0)
             {
-                Logger.Log.Print("downloading chromium driver...", Logger.LogType.INFO);
+                Logging.Logger.Print("downloading chromium driver...", Logging.LogType.INFO);
                 await _browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
             }
         }
@@ -101,7 +101,7 @@ namespace LinkedinEmails
         /// <returns></returns>
         public async Task InitAsync()
         {
-            Logger.Log.Print("initializing...", Logger.LogType.INFO);
+            Logging.Logger.Print("initializing...", Logging.LogType.INFO);
 
             await CheckAndDownloadRevision();
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
@@ -113,7 +113,7 @@ namespace LinkedinEmails
             _browserPage = await _browser.NewPageAsync();
             await _browserPage.SetUserAgentAsync(UserAgent);
 
-            Logger.Log.Print("initialized with success", Logger.LogType.INFO);
+            Logging.Logger.Print("initialized with success", Logging.LogType.INFO);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace LinkedinEmails
             if (await WaitFor(className))
             {
                 _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(className));
-                Logger.Log.Print("found company employees page", Logger.LogType.INFO);
+                Logging.Logger.Print("found company employees page", Logging.LogType.INFO);
                 return true;
             }
             return false;
@@ -145,7 +145,7 @@ namespace LinkedinEmails
 
             if (!foundCompanyEmployeesPage)
             {
-                Logger.Log.Print("failed to find company employees page", Logger.LogType.INFO);
+                Logging.Logger.Print("failed to find company employees page", Logging.LogType.INFO);
             }
         }
 
@@ -169,7 +169,7 @@ namespace LinkedinEmails
                 return true;
             }catch(Exception ex)
             {
-                Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
+                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
                 return false;
             }
         }
@@ -184,11 +184,11 @@ namespace LinkedinEmails
         {
             try
             {
-                Logger.Log.Print("attempting to login...", Logger.LogType.INFO);
+                Logging.Logger.Print("attempting to login...", Logging.LogType.INFO);
 
                 if (!await VisitAndWaitAsync("https://www.linkedin.com/", "#session_password"))
                 {
-                    Logger.Log.Print("failed to load linkedin", Logger.LogType.ERROR);
+                    Logging.Logger.Print("failed to load linkedin", Logging.LogType.ERROR);
                     return false;
                 }
 
@@ -200,11 +200,11 @@ namespace LinkedinEmails
             }
             catch (Exception ex)
             {
-                Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
+                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
                 return false;
             }
 
-            Logger.Log.Print("login successful", Logger.LogType.INFO);
+            Logging.Logger.Print("login successful", Logging.LogType.INFO);
             return true;
         }
 
@@ -223,11 +223,11 @@ namespace LinkedinEmails
                 string page = await _browserPage.EvaluateFunctionAsync<string>(JsGetLastPage);
                 _lastPage = Convert.ToInt32(page);
 
-                Logger.Log.Print($"found number of pages ({_lastPage})", Logger.LogType.INFO);
+                Logging.Logger.Print($"found number of pages ({_lastPage})", Logging.LogType.INFO);
             }
             catch (Exception ex)
             {
-                Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
+                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
             }
         }
 
@@ -239,11 +239,11 @@ namespace LinkedinEmails
         {
             for (int i = 1; i < _lastPage + 1; i++)
             {
-                Logger.Log.Print($"extracting page {i}/{_lastPage}", Logger.LogType.INFO);
+                Logging.Logger.Print($"extracting page {i}/{_lastPage}", Logging.LogType.INFO);
 
                 if (!await VisitAndWaitAsync($"{_searchPageLink}&page={i}", ResultEntityClassName))
                 {
-                    Logger.Log.Print($"failed to get page {i}/{_lastPage}", Logger.LogType.WARN);
+                    Logging.Logger.Print($"failed to get page {i}/{_lastPage}", Logging.LogType.WARN);
                     continue;
                 }
 
@@ -279,7 +279,7 @@ namespace LinkedinEmails
             }
             catch (Exception ex)
             {
-                Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
+                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
                 return false;
             }
 
@@ -289,18 +289,18 @@ namespace LinkedinEmails
         /// <summary>
         /// Saves Employees list to file
         /// </summary>
-        public void SaveFile<T>(List<T> obj)
+        public static void SaveFile<T>(List<T> obj)
         {
             string filename = $"emails-{DateTime.Now.ToString("yyyy-dd-M-HH-mm-ss")}.json";
 
             try
             {
                 File.WriteAllText(filename, JsonConvert.SerializeObject(obj, Formatting.Indented));
-                Logger.Log.Print($"saved output to {filename}", Logger.LogType.INFO);
+                Logging.Logger.Print($"saved output to {filename}", Logging.LogType.INFO);
             }
             catch (Exception ex)
             {
-                Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
+                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
             }
         }
     }

@@ -1,11 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace LinkedinEmails.Logger
+namespace LinkedinEmails.Logging
 {
     /// <summary>
     /// 
     /// </summary>
-    public class Log
+    public class Logger
     {
         /// <summary>
         /// 

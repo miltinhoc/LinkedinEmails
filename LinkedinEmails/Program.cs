@@ -26,7 +26,7 @@ namespace LinkedinEmails
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log.Print(ex.Message, Logger.LogType.ERROR);
+                        Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
                     }
                 }
 
