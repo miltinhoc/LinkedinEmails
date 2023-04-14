@@ -4,26 +4,29 @@ namespace LinkedinEmails
 {
     internal class Program
     {
+        private static Client _client;
+
         static async Task Main(string[] args)
         {
+            Console.CancelKeyPress += Console_CancelKeyPress;
             CommandLineProcessor processor = new();
 
             if (processor.ParseArguments(args))
             {
                 Header.Draw();
 
-                Client client = new(processor.Domain);
-                await client.InitAsync();
+                _client = new(processor.Domain);
+                await _client.InitAsync();
 
-                if (await client.TryLoginAsync(processor.Email, processor.Password))
+                if (await _client.TryLoginAsync(processor.Email, processor.Password))
                 {
                     try
                     {
-                        await client.SetCompanyPageAsync(processor.CompanyName);
-                        await client.SetSearchLastPageAsync();
-                        await client.SearchLoopAsync();
+                        await _client.SetCompanyPageAsync(processor.CompanyName);
+                        await _client.SetSearchLastPageAsync();
+                        await _client.SearchLoopAsync();
 
-                        client.GenerateAndSaveEmails();
+                        _client.GenerateAndSaveEmails();
                     }
                     catch (Exception ex)
                     {
@@ -31,8 +34,13 @@ namespace LinkedinEmails
                     }
                 }
 
-                await client.Close();
+                await _client.Close();
             }
+        }
+
+        private static void Console_CancelKeyPress(object? sender, ConsoleCancelEventArgs e)
+        {
+            _client.Close().Wait();
         }
     }
 }

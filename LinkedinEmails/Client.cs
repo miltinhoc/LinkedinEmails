@@ -46,7 +46,15 @@ namespace LinkedinEmails
 
         public async Task Close()
         {
-            await _browser.CloseAsync();
+            try
+            {
+                await _browserPage.CloseAsync();
+                await _browser.CloseAsync();
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
+            }
         }
 
         /// <summary>
