@@ -12,22 +12,22 @@ Download and install the .NET Core 6.0 SDK from the official website:
 
 Follow the installation instructions for your operating system.
 
-Step 2: Restore Dependencies
+### Step 2: Restore Dependencies
 ```bash
 dotnet restore
 ```
 
-Step 3: Build the Project
+### Step 3: Build the Project
 ```bash
 dotnet build
 ```
 
-Step 4: Run the Project
+### Step 4: Run the Project
 ```bash
 dotnet run --project LinkedinSearcher/LinkedinSearcher.csproj
 ```
 
-Step 5: Publish the Project
+### Step 5: Publish the Project
 ```bash
 dotnet publish --configuration Release --runtime linux-x64
 ```
