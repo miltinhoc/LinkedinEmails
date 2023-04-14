@@ -64,7 +64,7 @@ namespace LinkedinEmails.CommandLine
             return true;
         }
 
-        private void ShowHelp()
+        private static void ShowHelp()
         {
             string c = @"Usage: LinkedinEmails [-options]
 

@@ -299,7 +299,7 @@ namespace LinkedinEmails
         /// </summary>
         private static void SaveFile<T>(List<T> obj)
         {
-            string filename = $"emails-{DateTime.Now.ToString("yyyy-dd-M-HH-mm-ss")}.json";
+            string filename = $"emails-{DateTime.Now:yyyy-dd-M-HH-mm-ss}.json";
 
             try
             {

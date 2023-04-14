@@ -6,14 +6,11 @@ namespace LinkedinEmails.EmailUtils
     {
         private readonly string _domain;
 
-        public EmailGenerator(string domain)
-        {
-            _domain = domain;
-        }
+        public EmailGenerator(string domain) => _domain = domain;
 
         public List<EmployeeDTO> Generate(List<Employee> employees)
         {
-            List<EmployeeDTO> employeesDTO = new List<EmployeeDTO>();
+            List<EmployeeDTO> employeesDTO = new();
 
             foreach (Employee employee in employees)
             {
@@ -30,14 +27,8 @@ namespace LinkedinEmails.EmailUtils
             return employeesDTO;
         }
 
-        private string GetEmail(string part)
-        {
-            return $"{part}@{_domain}";
-        }
-
-        private string GetEmail(string part1, string part2)
-        {
-            return $"{part1}.{part2}@{_domain}";
-        }
+        private string GetEmail(string part) => $"{part}@{_domain}";
+     
+        private string GetEmail(string part1, string part2) => $"{part1}.{part2}@{_domain}";
     }
 }

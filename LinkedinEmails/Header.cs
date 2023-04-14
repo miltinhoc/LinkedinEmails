@@ -4,7 +4,7 @@ namespace LinkedinEmails
 {
     public class Header
     {
-        private static readonly Dictionary<string, ConsoleColor> logo = new Dictionary<string, ConsoleColor>();
+        private static readonly Dictionary<string, ConsoleColor> logo = new();
         private static bool isInit;
         private static readonly ConsoleColor color = ConsoleColor.Red;
 
