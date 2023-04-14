@@ -7,7 +7,6 @@ It's possible to create builds for Windows, Linux and macOS since the project is
 ### Step 1: Download and Install .NET Core 6.0 SDK
 
 Download and install the .NET Core 6.0 SDK from the official website:
-
 [.NET Core 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 Follow the installation instructions for your operating system.
