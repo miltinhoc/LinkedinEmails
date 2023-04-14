@@ -29,8 +29,8 @@ namespace LinkedinEmails
             logo.Add(@"       :#@@@%%%#-.  .  :#%#=::*%@@*.", color);
             logo.Add(@"         -#@@@linkedinEmails%@@@*.", color);
             logo.Add(@"           .=#@@@@@@@%@@@@%@%*=.", color);
-            logo.Add(@"               .-=+*****+=-.", color);
-            logo.Add(@"               .-=+*****+=-.", color);
+            logo.Add(@"               .-=+*****+=-.  ", color);
+            logo.Add(@"               .-=+*****+=-.   ", color);
             logo.Add($" [miltinh0c] (v{Assembly.GetExecutingAssembly().GetName().Version})\n", ConsoleColor.White);
         }
 
