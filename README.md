@@ -45,5 +45,6 @@ options:
 	-p password>		your linkedin account password
 	-c <company name>	linkedin company email 
 	-d <company domain>	email domain	
+	-h			show help	
 ```
 
