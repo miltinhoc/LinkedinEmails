@@ -84,6 +84,17 @@ namespace LinkedinEmails
             SaveFile(employeeDTOs);
         }
 
+        private async Task CheckAndDownloadRevision()
+        {
+            List<string> revisions = _browserFetcher.LocalRevisions().ToList();
+
+            if (revisions.Count == 0)
+            {
+                Logger.Log.Print("downloading chromium driver...", Logger.LogType.INFO);
+                await _browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
+            }
+        }
+
         /// <summary>
         /// Downloads chromium driver if not already present and launches puppeteer
         /// </summary>
@@ -91,7 +102,8 @@ namespace LinkedinEmails
         public async Task InitAsync()
         {
             Logger.Log.Print("initializing...", Logger.LogType.INFO);
-            await _browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
+
+            await CheckAndDownloadRevision();
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true,
