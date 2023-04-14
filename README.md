@@ -33,7 +33,7 @@ dotnet publish --configuration Release --runtime linux-x64
 ```
 
 If you want to build for other platform, check the official list of available options from microsoft:
-[.NET RID Catalog]https://learn.microsoft.com/en-us/dotnet/core/rid-catalog
+[.NET RID Catalog](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog)
 
 ## How to use
 
