@@ -1,5 +1,5 @@
 # LinkedinEmails
-![linkedinemails](https://user-images.githubusercontent.com/26238419/231872110-21f60d32-0f94-460e-8398-03c98ab6616c.png)
+![LinkedinEmails](https://user-images.githubusercontent.com/26238419/231917888-746674c1-f93e-4610-a1b5-6aec8a297ccf.png)
 Searches for employees of a company on linkedin using [PuppeteerSharp](https://github.com/hardkoded/puppeteer-sharp) and outputs a list composed of full names and possible emails.<br />
 It's possible to create builds for Windows, Linux and macOS since the project is done in .NET Core 6.
 
