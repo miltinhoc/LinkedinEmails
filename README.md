@@ -26,7 +26,9 @@ dotnet build
 dotnet run --project LinkedinSearcher/LinkedinSearcher.csproj
 ```
 
-### Step 5: Publish the Project
+Make sure to pass the arguments needed.
+
+### Step 5: Publish the Project (Optional)
 ```bash
 dotnet publish --configuration Release --runtime linux-x64
 ```
@@ -34,7 +36,7 @@ dotnet publish --configuration Release --runtime linux-x64
 If you want to build for other platform, check the official list of available options from microsoft:
 [.NET RID Catalog](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog)
 
-## How to use
+## Arguments
 
 | Argument | Description |
 | ------------- | ------------- |
@@ -42,7 +44,3 @@ If you want to build for other platform, check the official list of available op
 | -p | Your Linkedin password |
 | -c | This is the company name, you can find this value by visiting the company's page and checking the URL. Example: https://www.linkedin.com/company/twitter/ |
 | -d | The company's domain |
-
-```
-LinkedinEmails.exe -e=<email> -p=<password> -c=twitter -d=twitter.com
-```
