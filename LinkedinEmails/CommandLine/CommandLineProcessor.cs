@@ -15,7 +15,7 @@ namespace LinkedinEmails.CommandLine
 
         /// <summary>
         /// Takes an array of command-line arguments (args) and checks if they are valid based on the expected format. 
-        /// It expects three arguments: email, password, and company name, each prefixed with "-e=", "-p=", and "-c=", "-d=", respectively. 
+        /// It expects three arguments: email, password, and company name, each prefixed with "-e", "-p", "-c", "-d" and "-h", respectively. 
         /// It extracts the values from the arguments and assigns them to the corresponding properties. 
         /// </summary>
         /// <param name="args"></param>

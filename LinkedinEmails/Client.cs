@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using PuppeteerSharp;
 using System.Text.RegularExpressions;
 using LinkedinEmails.Constants;
+using LinkedinEmails.Helper;
 
 namespace LinkedinEmails
 {
@@ -228,11 +229,13 @@ namespace LinkedinEmails
         {
             for (int i = 1; i < _lastPage + 1; i++)
             {
+                if (i != 1)
+                    ConsoleHelper.ClearLastConsoleLine();
+
                 Logging.Logger.Print($"extracting page {i}/{_lastPage}", Logging.LogType.INFO);
 
                 if (!await VisitAndWaitAsync($"{_searchPageLink}&page={i}", LinkedinClasses.ResultEntityClassName))
                 {
-                    Logging.Logger.Print($"failed to get page {i}/{_lastPage}", Logging.LogType.WARN);
                     continue;
                 }
 
