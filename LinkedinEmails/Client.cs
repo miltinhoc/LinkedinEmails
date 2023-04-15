@@ -29,6 +29,10 @@ namespace LinkedinEmails
             _browserFetcher = new BrowserFetcher();
         }
 
+        /// <summary>
+        /// Closes the browser page and the browser instance asynchronously, handling any exceptions that may occur.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous close operation.</returns>
         public async Task Close()
         {
             try
@@ -43,27 +47,27 @@ namespace LinkedinEmails
         }
 
         /// <summary>
-        /// 
+        /// Scrolls to the end of the given browser page asynchronously by executing a JavaScript function.
         /// </summary>
-        /// <param name="page"></param>
-        /// <returns></returns>
+        /// <param name="page">The browser page on which the scroll action is to be performed.</param>
+        /// <returns>A task that represents the asynchronous scroll operation.</returns>
         private static async Task ScrollToEndOfPageAsync(Page page)
         {
             await page.EvaluateFunctionAsync(LinkedinClasses.JsScrollDown);
         }
 
         /// <summary>
-        /// 
+        /// Generates a JavaScript function as a string to retrieve the href attribute of an element using the given CSS selector.
         /// </summary>
-        /// <param name="selector"></param>
-        /// <returns></returns>
+        /// <param name="selector">The CSS selector to be used to query the target element.</param>
+        /// <returns>A string containing the JavaScript function.</returns>
         private static string GenerateJsSearchPage(string selector)
         {
             return $"() => {{return document.querySelector('{selector}').href;}}";
         }
 
         /// <summary>
-        /// 
+        /// Generates email addresses for a list of employees using the email generator and saves them to a file.
         /// </summary>
         public void GenerateAndSaveEmails()
         {
@@ -71,6 +75,10 @@ namespace LinkedinEmails
             SaveFile(employeeDTOs);
         }
 
+        /// <summary>
+        /// Checks the availability of the Chromium driver's local revisions and downloads the default revision asynchronously if no revisions are found.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous check and download operation.</returns>
         private async Task CheckAndDownloadRevision()
         {
             List<string> revisions = _browserFetcher.LocalRevisions().ToList();
@@ -83,9 +91,9 @@ namespace LinkedinEmails
         }
 
         /// <summary>
-        /// Downloads chromium driver if not already present and launches puppeteer
+        /// Initializes the browser instance and browser page asynchronously, setting up the required configurations, and ensuring that the Chromium driver is available.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task that represents the asynchronous initialization operation.</returns>
         public async Task InitAsync()
         {
             Logging.Logger.Print("initializing...", Logging.LogType.INFO);
@@ -104,10 +112,10 @@ namespace LinkedinEmails
         }
 
         /// <summary>
-        /// 
+        /// Searches for a company's employees page using the given class name asynchronously, and stores the link to the page if found.
         /// </summary>
-        /// <param name="className"></param>
-        /// <returns></returns>
+        /// <param name="className">The CSS class name to be used to query the target element.</param>
+        /// <returns>A boolean result indicating if the employees page was found.</returns>
         private async Task<bool> FindCompanyEmployeesPageAsync(string className)
         {
             if (await WaitFor(className))
@@ -145,12 +153,6 @@ namespace LinkedinEmails
             return Regex.Replace(input, pattern, m => Uri.EscapeDataString(m.Value));
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="selector"></param>
-        /// <param name="timeout"></param>
-        /// <returns></returns>
         private async Task<bool> WaitFor(string selector, int timeout = 10000)
         {
             try
@@ -221,10 +223,6 @@ namespace LinkedinEmails
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public async Task SearchLoopAsync()
         {
             for (int i = 1; i < _lastPage + 1; i++)
@@ -245,9 +243,9 @@ namespace LinkedinEmails
         }
 
         /// <summary>
-        /// 
+        /// Adds employees to the instance's employee list by converting each string in the input list to an Employee object.
         /// </summary>
-        /// <param name="list">Employees full name list</param>
+        /// <param name="list">A list of strings, each representing an employee's name.</param>
         private void AddEmployees(List<string> list)
         {
             foreach (string employee in list)
