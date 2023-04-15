@@ -3,29 +3,19 @@ using LinkedinEmails.Model;
 using Newtonsoft.Json;
 using PuppeteerSharp;
 using System.Text.RegularExpressions;
+using LinkedinEmails.Constants;
 
 namespace LinkedinEmails
 {
     public class Client
     {
         private readonly BrowserFetcher _browserFetcher;
-        private readonly ViewPortOptions _viewPortOptions;
         private IBrowser _browser;
         private IPage _browserPage;
-
-        private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
-        private static readonly string JsGetEmployeeNames = "Array.from(document.querySelectorAll('.entity-result__title-text a span[dir] span[aria-hidden]')).map(a => a.innerText);";
-        private static readonly string JsGetLastPage = "() => {var elem = document.querySelectorAll('.artdeco-pagination__indicator.artdeco-pagination__indicator--number');return elem[elem.length-1].getAttribute('data-test-pagination-page-btn');}";
-        
-        private static readonly string EmployeesLinkClassName = ".org-top-card-secondary-content__see-all-link";
-        private static readonly string EmployeesLinkAllClassName = ".org-top-card-secondary-content__see-all-independent-link a";
-        private static readonly string LinkedinNavbarClassName = ".global-nav__me";
-        private static readonly string ResultEntityClassName = ".entity-result__item";
-
         private int _lastPage = 1;
         private string _searchPageLink;
-        private readonly List<Employee> _employees;
 
+        private readonly List<Employee> _employees;
         private readonly EmailGenerator emailGenerator;
 
         /// <summary>
@@ -36,12 +26,6 @@ namespace LinkedinEmails
             emailGenerator = new EmailGenerator(domain);
             _employees = new List<Employee>();
             _browserFetcher = new BrowserFetcher();
-
-            _viewPortOptions = new ViewPortOptions
-            {
-                Width = 1200,
-                Height = 900
-            };
         }
 
         public async Task Close()
@@ -64,13 +48,7 @@ namespace LinkedinEmails
         /// <returns></returns>
         private static async Task ScrollToEndOfPageAsync(Page page)
         {
-            await page.EvaluateFunctionAsync(@"() => {
-                window.scrollTo({
-                    top: document.body.scrollHeight,
-                    left: 0,
-                    behavior: 'smooth'
-                });
-            }");
+            await page.EvaluateFunctionAsync(LinkedinClasses.JsScrollDown);
         }
 
         /// <summary>
@@ -115,11 +93,11 @@ namespace LinkedinEmails
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true,
-                DefaultViewport = _viewPortOptions
+                DefaultViewport = new ViewPortOptions { Width = 1200, Height = 900}
             });
 
             _browserPage = await _browser.NewPageAsync();
-            await _browserPage.SetUserAgentAsync(UserAgent);
+            await _browserPage.SetUserAgentAsync(LinkedinClasses.UserAgent);
 
             Logging.Logger.Print("initialized with success", Logging.LogType.INFO);
         }
@@ -149,7 +127,10 @@ namespace LinkedinEmails
         public async Task SetCompanyPageAsync(string companyName)
         {
             await _browserPage.GoToAsync($"https://www.linkedin.com/company/{EscapeSpecialCharacters(companyName)}");
-            bool foundCompanyEmployeesPage = await FindCompanyEmployeesPageAsync(EmployeesLinkAllClassName) || await FindCompanyEmployeesPageAsync(EmployeesLinkClassName);
+
+
+            bool foundCompanyEmployeesPage = await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkAllClassName) || 
+                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkClassName);
 
             if (!foundCompanyEmployeesPage)
             {
@@ -194,17 +175,17 @@ namespace LinkedinEmails
             {
                 Logging.Logger.Print("attempting to login...", Logging.LogType.INFO);
 
-                if (!await VisitAndWaitAsync("https://www.linkedin.com/", "#session_password"))
+                if (!await VisitAndWaitAsync("https://www.linkedin.com/", LinkedinClasses.IdPasswordInput))
                 {
                     Logging.Logger.Print("failed to load linkedin", Logging.LogType.ERROR);
                     return false;
                 }
 
-                await _browserPage.EvaluateExpressionAsync($"document.querySelector('#session_key').value ='{email}'");
-                await _browserPage.EvaluateExpressionAsync($"document.querySelector('#session_password').value ='{password}'");
-                await _browserPage.EvaluateExpressionAsync("document.querySelector('button.sign-in-form__submit-btn--full-width').click()");
+                await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.IdEmailInput}').value ='{email}'");
+                await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.IdPasswordInput}').value ='{password}'");
+                await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.SelectorLoginButton}').click()");
 
-                await _browserPage.WaitForSelectorAsync(LinkedinNavbarClassName);
+                await _browserPage.WaitForSelectorAsync(LinkedinClasses.LinkedinNavbarClassName);
             }
             catch (Exception ex)
             {
@@ -224,11 +205,11 @@ namespace LinkedinEmails
         {
             await _browserPage.GoToAsync(_searchPageLink);
             await ScrollToEndOfPageAsync((Page)_browserPage);
-            await WaitFor(".artdeco-pagination__indicator", 15000);
+            await WaitFor(LinkedinClasses.PageSelectorClassName, 15000);
 
             try
             {
-                string page = await _browserPage.EvaluateFunctionAsync<string>(JsGetLastPage);
+                string page = await _browserPage.EvaluateFunctionAsync<string>(LinkedinClasses.JsGetLastPage);
                 _lastPage = Convert.ToInt32(page);
 
                 Logging.Logger.Print($"found number of pages ({_lastPage})", Logging.LogType.INFO);
@@ -249,13 +230,13 @@ namespace LinkedinEmails
             {
                 Logging.Logger.Print($"extracting page {i}/{_lastPage}", Logging.LogType.INFO);
 
-                if (!await VisitAndWaitAsync($"{_searchPageLink}&page={i}", ResultEntityClassName))
+                if (!await VisitAndWaitAsync($"{_searchPageLink}&page={i}", LinkedinClasses.ResultEntityClassName))
                 {
                     Logging.Logger.Print($"failed to get page {i}/{_lastPage}", Logging.LogType.WARN);
                     continue;
                 }
 
-                List<string> temp = await _browserPage.EvaluateExpressionAsync<List<string>>(JsGetEmployeeNames);
+                List<string> temp = await _browserPage.EvaluateExpressionAsync<List<string>>(LinkedinClasses.JsGetEmployeeNames);
                 AddEmployees(temp);
             }
         }
