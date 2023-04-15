@@ -5,6 +5,7 @@ using PuppeteerSharp;
 using System.Text.RegularExpressions;
 using LinkedinEmails.Constants;
 using LinkedinEmails.Helper;
+using LinkedinEmails.Validation;
 
 namespace LinkedinEmails
 {
@@ -16,8 +17,9 @@ namespace LinkedinEmails
         private int _lastPage = 1;
         private string _searchPageLink;
 
-        private readonly List<Employee> _employees;
+        private readonly List<Employee> employeesList;
         private readonly EmailGenerator emailGenerator;
+        private readonly EmailValidator emailValidator;
 
         /// <summary>
         /// Constructor
@@ -25,7 +27,7 @@ namespace LinkedinEmails
         public Client(string domain)
         {
             emailGenerator = new EmailGenerator(domain);
-            _employees = new List<Employee>();
+            employeesList = new List<Employee>();
             _browserFetcher = new BrowserFetcher();
         }
 
@@ -71,7 +73,7 @@ namespace LinkedinEmails
         /// </summary>
         public void GenerateAndSaveEmails()
         {
-            List<EmployeeDTO> employeeDTOs = emailGenerator.Generate(_employees);
+            List<EmployeeDTO> employeeDTOs = emailGenerator.Generate(employeesList);
             SaveFile(employeeDTOs);
         }
 
@@ -250,7 +252,7 @@ namespace LinkedinEmails
         {
             foreach (string employee in list)
             {
-                _employees.Add(new Employee(employee));
+                employeesList.Add(new Employee(employee));
             }
         }
 

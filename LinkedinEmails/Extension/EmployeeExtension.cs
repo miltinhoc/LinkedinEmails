@@ -18,9 +18,7 @@
         public static string CleanSpecialCharacters(this string value)
         {
             if (string.IsNullOrEmpty(value))
-            {
                 return string.Empty;
-            }
 
             foreach (KeyValuePair<string, string> kvp in Chars)
             {
