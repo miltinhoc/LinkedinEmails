@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Sockets;
 
 namespace LinkedinEmails.Smtp
 {
@@ -60,8 +55,8 @@ namespace LinkedinEmails.Smtp
 
     public enum SmtpResponseCode
     {
-        SyntaxErrorCommandUnrecognized = 500,
-        SyntaxErrorInParametersOrArguments = 501,
+        CommandUnrecognized = 500,
+        InParametersOrArguments = 501,
         CommandNotImplemented = 502,
         BadSequenceOfCommands = 503,
         CommandParameterNotImplemented = 504,
@@ -69,18 +64,18 @@ namespace LinkedinEmails.Smtp
         ServiceReadyInNNNMinutes = 214,
         ServiceReady = 220,
         ServiceClosingTransmissionChannel = 221,
-        RequestedMailActionOkayCompleted = 250,
+        Completed = 250,
         UserNotLocalWillForwardTo = 251,
         CannotVerifyUserWillAttemptDelivery = 252,
         StartMailInput = 354,
         ServiceNotAvailable = 421,
-        RequestedMailActionNotTakenMailboxUnavailable = 450,
-        RequestedActionAbortedLocalErrorInProcessing = 451,
-        RequestedActionNotTakenInsufficientSystemStorage = 452,
-        RequestedActionNotTakenMailboxUnavailablePermanent = 550,
+        MailboxUnavailable = 450,
+        LocalErrorInProcessing = 451,
+        InsufficientSystemStorage = 452,
+        MailboxUnavailablePermanent = 550,
         UserNotLocalPleaseTryForwardPath = 551,
-        RequestedMailActionAbortedExceededStorageAllocation = 552,
-        RequestedActionNotTakenMailboxNameNotAllowed = 553,
+        ExceededStorageAllocation = 552,
+        MailboxNameNotAllowed = 553,
         TransactionFailed = 554,
     }
 }

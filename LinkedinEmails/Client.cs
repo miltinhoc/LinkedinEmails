@@ -1,4 +1,4 @@
-﻿using LinkedinEmails.EmailUtils;
+﻿using LinkedinEmails.Generator;
 using LinkedinEmails.Model;
 using Newtonsoft.Json;
 using PuppeteerSharp;

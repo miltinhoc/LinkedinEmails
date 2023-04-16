@@ -1,6 +1,6 @@
 ﻿using LinkedinEmails.Model;
 
-namespace LinkedinEmails.EmailUtils
+namespace LinkedinEmails.Generator
 {
     public class EmailGenerator
     {
