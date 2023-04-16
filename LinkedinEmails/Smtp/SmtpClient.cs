@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Text.RegularExpressions;
 
 namespace LinkedinEmails.Smtp
 {
@@ -27,6 +28,41 @@ namespace LinkedinEmails.Smtp
 
             if (Enum.TryParse(response?[..3], out SmtpResponseCode code))
                 return code == expectedCode;
+
+            return false;
+        }
+
+        public TimeSpan? ParseGreylistDuration(string serverResponse)
+        {
+            Regex regex = new Regex(@"(\d+)\s*(minute(s)?|second(s)?|hour(s)?)", RegexOptions.IgnoreCase);
+            Match match = regex.Match(serverResponse);
+
+            if (match.Success)
+            {
+                int duration = int.Parse(match.Groups[1].Value);
+                string unit = match.Groups[2].Value.ToLower();
+
+                if (unit.Contains("second"))
+                    return TimeSpan.FromSeconds(duration);
+                else if (unit.Contains("minute"))
+                    return TimeSpan.FromMinutes(duration);
+                else if (unit.Contains("hour"))
+                    return TimeSpan.FromHours(duration);
+            }
+
+            return null;
+        }
+
+        public bool IsGreylisted(string serverResponse)
+        {
+            Regex regex = new Regex(@"^4\d\d\s");
+            if (regex.IsMatch(serverResponse))
+            {
+                string[] greylistKeywords = { "greylist", "greylisted", "temporary", "try again later" };
+
+                if (Array.Exists(greylistKeywords, keyword => serverResponse.ToLower().Contains(keyword)))
+                    return true;
+            }
 
             return false;
         }
