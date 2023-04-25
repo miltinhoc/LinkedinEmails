@@ -9,11 +9,9 @@ namespace LinkedinEmails.Model
         public string LastName { get; set; }
         public char FirstNameLetter { get; set; }
         public char LastNameLetter { get; set; }
-        public List<string> EmailList { get; set; }
 
         public Employee (string fullName)
         {
-            EmailList = new List<string>();
             FullName = fullName;
 
             SetFirstAndLastName();
@@ -33,7 +31,5 @@ namespace LinkedinEmails.Model
             FirstNameLetter = FirstName.FirstOrDefault();
             LastNameLetter = LastName.FirstOrDefault();
         }
-
-        public void AddEmails(List<string> emailList) => EmailList.AddRange(emailList);
     }
 }

@@ -1,6 +1,8 @@
 # LinkedinEmails
 ![LinkedinEmails](https://user-images.githubusercontent.com/26238419/231917888-746674c1-f93e-4610-a1b5-6aec8a297ccf.png)
 Searches for employees of a company on linkedin using [PuppeteerSharp](https://github.com/hardkoded/puppeteer-sharp) and outputs a list composed of full names and possible emails.<br />
+It's now also possible to validate the emails for each employee using SMTP, note that this is not always 100% reliable.<br />
+This application might stop working on the future due to changes in Linkedin, I will try to keep it up to date.<br />
 It's possible to create builds for Windows, Linux and macOS since the project is done in .NET Core 6.
 
 ## Building and Running
@@ -45,6 +47,7 @@ options:
 	-p <password>		your linkedin account password
 	-c <company name>	linkedin company email 
 	-d <company domain>	email domain	
+	-v			tries to validate the emails (optional)
 	-h			show this help message and exit	
 ```
 

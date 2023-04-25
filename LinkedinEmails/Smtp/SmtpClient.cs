@@ -1,17 +1,22 @@
-﻿using System.Net.Sockets;
+﻿using System.Net.Security;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace LinkedinEmails.Smtp
 {
+    // TODO: check for Greylisting && for Spamhaus blacklist
     public class SmtpClient
     {
         public TcpClient TcpClient { get; private set; }
         public StreamReader StreamReader { get; private set; }
         public StreamWriter StreamWriter { get; private set; }
+        public SslStream SslStream { get; private set; }
 
-        public SmtpClient() => TcpClient = new TcpClient();
-
-        public async Task ConnectAsync(string hostname, int port) => await TcpClient.ConnectAsync(hostname, port);
+        public async Task ConnectAsync(string hostname, int port)
+        {
+            TcpClient = new TcpClient();
+            await TcpClient.ConnectAsync(hostname, port);
+        }
 
         public void SetupStreams()
         {
@@ -32,9 +37,19 @@ namespace LinkedinEmails.Smtp
             return false;
         }
 
-        public TimeSpan? ParseGreylistDuration(string serverResponse)
+        private SmtpResponseCode GetResponseCode()
         {
-            Regex regex = new Regex(@"(\d+)\s*(minute(s)?|second(s)?|hour(s)?)", RegexOptions.IgnoreCase);
+            string? response = StreamReader.ReadLine();
+
+            if (Enum.TryParse(response?[..3], out SmtpResponseCode code))
+                return code;
+
+            return SmtpResponseCode.Unknown;
+        }
+        
+        public static TimeSpan? ParseGreylistDuration(string serverResponse)
+        {
+            Regex regex = new(@"(\d+)\s*(minute(s)?|second(s)?|hour(s)?)", RegexOptions.IgnoreCase);
             Match match = regex.Match(serverResponse);
 
             if (match.Success)
@@ -53,7 +68,7 @@ namespace LinkedinEmails.Smtp
             return null;
         }
 
-        public bool IsGreylisted(string serverResponse)
+        public static bool IsGreylisted(string serverResponse)
         {
             Regex regex = new Regex(@"^4\d\d\s");
             if (regex.IsMatch(serverResponse))
@@ -75,15 +90,15 @@ namespace LinkedinEmails.Smtp
             return false;
         }
 
-        public bool SendAndCheckResponse(string message, SmtpResponseCode expectedCode)
+        public SmtpResponseCode SendMessage(string message)
         {
             if (StreamWriter != null)
             {
                 StreamWriter.WriteLine(message);
-                return CheckResponse(expectedCode);
+                return GetResponseCode();
             }
 
-            return false;
+            return SmtpResponseCode.Unknown;
         }
 
         public void Close() => TcpClient?.Close();
@@ -91,6 +106,7 @@ namespace LinkedinEmails.Smtp
 
     public enum SmtpResponseCode
     {
+        Unknown = 0,
         CommandUnrecognized = 500,
         InParametersOrArguments = 501,
         CommandNotImplemented = 502,
@@ -112,6 +128,6 @@ namespace LinkedinEmails.Smtp
         UserNotLocalPleaseTryForwardPath = 551,
         ExceededStorageAllocation = 552,
         MailboxNameNotAllowed = 553,
-        TransactionFailed = 554,
+        TransactionFailed = 554
     }
 }

@@ -17,17 +17,18 @@ namespace LinkedinEmails
         private int _lastPage = 1;
         private string _searchPageLink;
 
-        private readonly List<Employee> employeesList;
-        private readonly EmailGenerator emailGenerator;
-        private readonly EmailValidator emailValidator;
+        private readonly List<Employee> _employeesList;
+        private readonly EmailGenerator _emailGenerator;
+        private List<EmployeeDTO> _employeeDTOList;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public Client(string domain)
         {
-            emailGenerator = new EmailGenerator(domain);
-            employeesList = new List<Employee>();
+            _emailGenerator = new EmailGenerator(domain);
+            _employeesList = new List<Employee>();
+            _employeeDTOList = new List<EmployeeDTO>();
             _browserFetcher = new BrowserFetcher();
         }
 
@@ -35,7 +36,7 @@ namespace LinkedinEmails
         /// Closes the browser page and the browser instance asynchronously, handling any exceptions that may occur.
         /// </summary>
         /// <returns>A task that represents the asynchronous close operation.</returns>
-        public async Task Close()
+        public async Task CloseAsync()
         {
             try
             {
@@ -73,8 +74,8 @@ namespace LinkedinEmails
         /// </summary>
         public void GenerateAndSaveEmails()
         {
-            List<EmployeeDTO> employeeDTOs = emailGenerator.Generate(employeesList);
-            SaveFile(employeeDTOs);
+            _employeeDTOList = _emailGenerator.Generate(_employeesList);
+            SaveFile(_employeeDTOList, "generated-emails");
         }
 
         /// <summary>
@@ -103,7 +104,7 @@ namespace LinkedinEmails
             await CheckAndDownloadRevision();
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
-                Headless = true,
+                Headless = false,
                 DefaultViewport = new ViewPortOptions { Width = 1200, Height = 900}
             });
 
@@ -138,7 +139,6 @@ namespace LinkedinEmails
         public async Task SetCompanyPageAsync(string companyName)
         {
             await _browserPage.GoToAsync($"https://www.linkedin.com/company/{EscapeSpecialCharacters(companyName)}");
-
 
             bool foundCompanyEmployeesPage = await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkAllClassName) || 
                 await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkClassName);
@@ -194,6 +194,8 @@ namespace LinkedinEmails
             }
             catch (Exception ex)
             {
+                await _browserPage.ScreenshotAsync("login-failed.png");
+
                 Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
                 return false;
             }
@@ -218,6 +220,8 @@ namespace LinkedinEmails
                 _lastPage = Convert.ToInt32(page);
 
                 Logging.Logger.Print($"found number of pages ({_lastPage})", Logging.LogType.INFO);
+
+                await _browserPage.ScreenshotAsync("a.png");
             }
             catch (Exception ex)
             {
@@ -252,7 +256,7 @@ namespace LinkedinEmails
         {
             foreach (string employee in list)
             {
-                employeesList.Add(new Employee(employee));
+                _employeesList.Add(new Employee(employee));
             }
         }
 
@@ -278,12 +282,37 @@ namespace LinkedinEmails
             return true;
         }
 
+        public async Task ValidateAndSaveEmails()
+        {
+            List<ValidEmployee> validEmployeesList = new();
+
+            foreach (EmployeeDTO employee in _employeeDTOList)
+            {
+                Logging.Logger.Print($"checking employee emails: {employee.FullName}", Logging.LogType.INFO);
+
+                foreach (string email in employee.EmailList)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(2));
+
+                    bool isValid = await EmailValidator.IsValidEmail(email);
+
+                    if (isValid)
+                    {
+                        validEmployeesList.Add(new ValidEmployee(employee.FullName, email));
+                        break;
+                    }
+                }
+            }
+
+            SaveFile(validEmployeesList, "valid-emails");
+        }
+
         /// <summary>
         /// Saves Employees list to file
         /// </summary>
-        private static void SaveFile<T>(List<T> obj)
+        private static void SaveFile<T>(List<T> obj, string prefix)
         {
-            string filename = $"emails-{DateTime.Now:yyyy-dd-M-HH-mm-ss}.json";
+            string filename = $"{prefix}-{DateTime.Now:yyyy-dd-M-HH-mm-ss}.json";
 
             try
             {

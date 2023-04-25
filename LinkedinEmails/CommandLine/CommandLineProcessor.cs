@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace LinkedinEmails.CommandLine
+﻿namespace LinkedinEmails.CommandLine
 {
     /// <summary>
     /// 
@@ -12,10 +10,11 @@ namespace LinkedinEmails.CommandLine
         public string Password { get; private set; }
         public string CompanyName { get; private set; }
         public string Domain { get; private set; }
+        public bool ValidateEmails { get; private set; }
 
         /// <summary>
         /// Takes an array of command-line arguments (args) and checks if they are valid based on the expected format. 
-        /// It expects three arguments: email, password, and company name, each prefixed with "-e", "-p", "-c", "-d" and "-h", respectively. 
+        /// It expects three arguments: email, password, and company name, each prefixed with "-e", "-p", "-c", "-d", "-v" and "-h", respectively. 
         /// It extracts the values from the arguments and assigns them to the corresponding properties. 
         /// </summary>
         /// <param name="args"></param>
@@ -28,7 +27,8 @@ namespace LinkedinEmails.CommandLine
                 return false;
             }
 
-            if (args.Length != 8)
+            if (args.Length < 8 || args.Length > 9)
+            //if (args.Length < 8 || args.Length > 9 || (args.Length == 9 && args[8] != "-v"))
             {
                 Console.WriteLine($" [*] Invalid number of arguments.\n{_usage}");
                 return false;
@@ -49,6 +49,10 @@ namespace LinkedinEmails.CommandLine
                         break;
                     case "-d":
                         Domain = args[i + 1];
+                        break;
+                    case "-v":
+                        i--;
+                        ValidateEmails = true;
                         break;
                     default:
                         return false;
@@ -73,6 +77,7 @@ options:
 	-p <password>		your linkedin account password
 	-c <company name>	linkedin company email 
 	-d <company domain>	email domain	
+	-v			tries to validate the emails
 	-h			show this help message and exit";
 
             Console.WriteLine(c);

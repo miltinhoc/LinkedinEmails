@@ -10,14 +10,14 @@ namespace LinkedinEmails.Validation
         {
             try
             {
-                LookupClientOptions options = new LookupClientOptions
+                LookupClientOptions options = new()
                 {
                     UseCache = true,
                     ContinueOnDnsError = false,
                     EnableAuditTrail = true
                 };
 
-                LookupClient lookupClient = new LookupClient(options);
+                LookupClient lookupClient = new(options);
                 var result = lookupClient.Query(domain, QueryType.MX);
 
                 if (result.HasError)
@@ -64,13 +64,15 @@ namespace LinkedinEmails.Validation
 
                 if (smtpClient.CheckServiceReady())
                 {
-                    if (smtpClient.SendAndCheckResponse($"HELO {Dns.GetHostName()}", SmtpResponseCode.Completed))
+                    if (smtpClient.SendMessage($"HELO {Dns.GetHostName()}") == SmtpResponseCode.Completed)
                     {
-                        if (smtpClient.SendAndCheckResponse("MAIL FROM:<linkedin2emails@gmail.com>", SmtpResponseCode.Completed))
+                        if (smtpClient.SendMessage("MAIL FROM:<linkedin2emails@gmail.com>") == SmtpResponseCode.Completed)
                         {
-                            if (smtpClient.SendAndCheckResponse($"RCPT TO:<{email}>", SmtpResponseCode.Completed))
+                            if (smtpClient.SendMessage($"RCPT TO:<{email}>") == SmtpResponseCode.Completed)
                             {
+                                smtpClient.SendMessage("QUIT");
                                 smtpClient.Close();
+
                                 return true;
                             }
                         }
@@ -82,7 +84,11 @@ namespace LinkedinEmails.Validation
                 Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
             }
 
+            if (smtpClient.TcpClient.Connected)
+                smtpClient.SendMessage("QUIT");
+
             smtpClient.Close();
+
             return false;
         }
     }

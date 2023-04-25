@@ -9,6 +9,8 @@ namespace LinkedinEmails
         static async Task Main(string[] args)
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+
             CommandLineProcessor processor = new();
 
             if (processor.ParseArguments(args))
@@ -27,6 +29,11 @@ namespace LinkedinEmails
                         await _client.SearchLoopAsync();
 
                         _client.GenerateAndSaveEmails();
+
+                        if (processor.ValidateEmails)
+                        {
+                            await _client.ValidateAndSaveEmails();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -34,13 +41,20 @@ namespace LinkedinEmails
                     }
                 }
 
-                await _client.Close();
+                await _client.CloseAsync();
             }
         }
 
+        private static void CurrentDomain_ProcessExit(object? sender, EventArgs e)
+        {
+            if (_client != null)
+                _client.CloseAsync().Wait();
+        }   
+
         private static void Console_CancelKeyPress(object? sender, ConsoleCancelEventArgs e)
         {
-            _client.Close().Wait();
+            if (_client != null)
+                _client.CloseAsync().Wait();
         }
     }
 }
