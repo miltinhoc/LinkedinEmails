@@ -6,9 +6,11 @@ It's now also possible to validate the emails for each employee using SMTP, note
 
 This application might stop working on the future due to changes in Linkedin, I will try to keep it up to date.<br />
 
-It's possible to create builds for Windows, Linux and macOS since the project is done in .NET Core 6.
 
 ## Building and Running
+
+It's possible to create builds for Windows, Linux and macOS since the project is done in .NET Core 6.
+
 ### Step 1: Download and Install .NET Core 6.0 SDK
 
 Download and install the .NET Core 6.0 SDK from the official website:
