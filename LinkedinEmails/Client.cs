@@ -104,7 +104,7 @@ namespace LinkedinEmails
             await CheckAndDownloadRevision();
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
-                Headless = false,
+                Headless = true,
                 DefaultViewport = new ViewPortOptions { Width = 1200, Height = 900}
             });
 
