@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using LinkedinEmails.Constants;
 using LinkedinEmails.Helper;
 using LinkedinEmails.Validation;
+using LinkedinEmails.Logging;
 
 namespace LinkedinEmails
 {
@@ -282,13 +283,22 @@ namespace LinkedinEmails
             return true;
         }
 
-        public async Task ValidateAndSaveEmails()
+        public static async Task ValidateAndSaveEmails(string filepath)
         {
             List<ValidEmployee> validEmployeesList = new();
 
-            foreach (EmployeeDTO employee in _employeeDTOList)
+            if (!File.Exists(filepath))
             {
-                Logging.Logger.Print($"checking employee emails: {employee.FullName}", Logging.LogType.INFO);
+                Logger.Print("File not found", LogType.ERROR);
+                return;
+            }
+
+            string content = File.ReadAllText(filepath);
+            List<EmployeeDTO> employeeDTOs = JsonConvert.DeserializeObject<List<EmployeeDTO>>(content);
+
+            foreach (EmployeeDTO employee in employeeDTOs)
+            {
+                Logger.Print($"checking employee emails: {employee.FullName}", LogType.INFO);
 
                 foreach (string email in employee.EmailList)
                 {
@@ -306,7 +316,7 @@ namespace LinkedinEmails
 
             SaveFile(validEmployeesList, "valid-emails");
         }
-
+      
         /// <summary>
         /// Saves Employees list to file
         /// </summary>

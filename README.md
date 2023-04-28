@@ -52,7 +52,17 @@ options:
 	-p <password>		your linkedin account password
 	-c <company name>	linkedin company email 
 	-d <company domain>	email domain	
-	-v			tries to validate the emails (optional)
+	-v			tries to validate the emails
+	-f <file path>		generated emails filepath
 	-h			show this help message and exit	
 ```
 
+### Example
+```bash
+LinkedinEmails -e example@outlook.com -p 12345 -c twitter -d twitter.com
+```
+
+Validating emails:
+```bash
+LinkedinEmails -v -f generated-emails-2023-28-4-07-33-02.json
+```

@@ -1,55 +1,71 @@
 ﻿using LinkedinEmails.CommandLine;
+using LinkedinEmails.Logging;
 
 namespace LinkedinEmails
 {
     internal class Program
     {
         private static Client _client;
+        private static CommandLineProcessor _processor;
 
         static async Task Main(string[] args)
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
-            CommandLineProcessor processor = new();
+            _processor = new();
 
-            if (processor.ParseArguments(args))
+            if (!_processor.ParseArguments(args))
+                return;
+
+            Header.Draw();
+
+            if (_processor.ValidateEmails)
             {
-                Header.Draw();
-
-                _client = new(processor.Domain);
-                await _client.InitAsync();
-
-                if (await _client.TryLoginAsync(processor.Email, processor.Password))
+                try
                 {
-                    try
-                    {
-                        await _client.SetCompanyPageAsync(processor.CompanyName);
-                        await _client.SetSearchLastPageAsync();
-                        await _client.SearchLoopAsync();
-
-                        _client.GenerateAndSaveEmails();
-
-                        if (processor.ValidateEmails)
-                        {
-                            await _client.ValidateAndSaveEmails();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
-                    }
+                    await Client.ValidateAndSaveEmails(_processor.EmailsFile);
                 }
-
-                await _client.CloseAsync();
+                catch (Exception ex)
+                {
+                    Logger.Print(ex.Message, LogType.ERROR);
+                }
             }
+            else
+            {
+                await StartGathering();
+            }
+        }
+
+        private static async Task StartGathering()
+        {
+            _client = new(_processor.Domain);
+            await _client.InitAsync();
+
+            if (await _client.TryLoginAsync(_processor.Email, _processor.Password))
+            {
+                try
+                {
+                    await _client.SetCompanyPageAsync(_processor.CompanyName);
+                    await _client.SetSearchLastPageAsync();
+                    await _client.SearchLoopAsync();
+
+                    _client.GenerateAndSaveEmails();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Print(ex.Message, LogType.ERROR);
+                }
+            }
+
+            await _client.CloseAsync();
         }
 
         private static void CurrentDomain_ProcessExit(object? sender, EventArgs e)
         {
             if (_client != null)
                 _client.CloseAsync().Wait();
-        }   
+        }
 
         private static void Console_CancelKeyPress(object? sender, ConsoleCancelEventArgs e)
         {
