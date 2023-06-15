@@ -46,6 +46,11 @@ namespace LinkedinEmails
             {
                 try
                 {
+                    if (!string.IsNullOrEmpty(_processor.Pin))
+                    {
+                        await _client.InsertAuthenticationPin(_processor.Pin);
+                    }
+
                     await _client.SetCompanyPageAsync(_processor.CompanyName);
                     await _client.SetSearchLastPageAsync();
                     await _client.SearchLoopAsync();

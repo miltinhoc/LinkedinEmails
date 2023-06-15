@@ -54,12 +54,18 @@ options:
 	-d <company domain>	email domain	
 	-v			tries to validate the emails
 	-f <file path>		generated emails filepath
+	-pin <auth pin>     	authentication pin
 	-h			show this help message and exit	
 ```
 
 ### Example
 ```bash
 LinkedinEmails -e example@outlook.com -p 12345 -c twitter -d twitter.com
+```
+
+If you have 2FA activated on your account, you can specify the -pin argument and provide with the pin
+```bash
+LinkedinEmails -e example@outlook.com -p 12345 -c twitter -d twitter.com -pin 274123
 ```
 
 Validating emails:

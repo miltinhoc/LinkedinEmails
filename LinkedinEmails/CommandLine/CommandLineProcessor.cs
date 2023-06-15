@@ -12,6 +12,7 @@
         public string Domain { get; private set; }
         public bool ValidateEmails { get; private set; }
         public string EmailsFile { get; private set; }
+        public string Pin { get; private set; }
 
         /// <summary>
         /// Takes an array of command-line arguments (args) and checks if they are valid based on the expected format. 
@@ -59,7 +60,7 @@
                 return true;
             }
 
-            if (args.Length != 8)
+            if (args.Length < 8)
             {
                 Console.WriteLine($" [*] Invalid number of arguments.\n{_usage}");
                 return false;
@@ -80,6 +81,9 @@
                         break;
                     case "-d":
                         Domain = args[i + 1];
+                        break;
+                    case "-pin":
+                        Pin = args[i + 1];
                         break;
                     default:
                         return false;
@@ -106,6 +110,7 @@ options:
 	-d <company domain>	email domain	
 	-v			tries to validate the emails
 	-f <file path>		generated emails filepath
+    -pin <auth pin>     authentication pin
 	-h			show this help message and exit";
 
             Console.WriteLine(c);

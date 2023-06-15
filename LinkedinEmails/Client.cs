@@ -139,10 +139,14 @@ namespace LinkedinEmails
         /// <returns></returns>
         public async Task SetCompanyPageAsync(string companyName)
         {
+            Logger.Print("trying to visit company's page...", LogType.INFO);
+
             await _browserPage.GoToAsync($"https://www.linkedin.com/company/{EscapeSpecialCharacters(companyName)}");
 
-            bool foundCompanyEmployeesPage = await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkAllClassName) || 
-                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkClassName);
+            bool foundCompanyEmployeesPage = 
+                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkAllClassName) || 
+                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkClassName) ||
+                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkInsightClassName);
 
             if (!foundCompanyEmployeesPage)
             {
@@ -177,10 +181,10 @@ namespace LinkedinEmails
         /// <returns>True if the logins is successful, otherwise returns false</returns>
         public async Task<bool> TryLoginAsync(string email, string password)
         {
+            Logger.Print("attempting to login...", LogType.INFO);
+            
             try
             {
-                Logger.Print("attempting to login...", LogType.INFO);
-
                 if (!await VisitAndWaitAsync("https://www.linkedin.com/", LinkedinClasses.IdPasswordInput))
                 {
                     Logger.Print("failed to load linkedin", LogType.ERROR);
@@ -191,7 +195,7 @@ namespace LinkedinEmails
                 await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.IdPasswordInput}').value ='{password}'");
                 await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.SelectorLoginButton}').click()");
 
-                await _browserPage.WaitForSelectorAsync(LinkedinClasses.LinkedinNavbarClassName);
+                //await _browserPage.WaitForSelectorAsync(LinkedinClasses.LinkedinNavbarClassName);
             }
             catch (Exception ex)
             {
@@ -203,6 +207,28 @@ namespace LinkedinEmails
 
             Logger.Print("login successful", LogType.INFO);
             return true;
+        }
+
+        public async Task InsertAuthenticationPin(string pin)
+        {
+            Logger.Print("trying to find the pin input...", LogType.INFO);
+
+            try
+            {
+                if (await WaitFor(".input_verification_pin"))
+                {
+                    Logger.Print("found authentication pin input...", LogType.INFO);
+
+                    await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.PinInputClassName}').value ='{pin}'");
+                    await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.IdPinSubmitButton}').click()");
+                }
+
+                await _browserPage.WaitForSelectorAsync(LinkedinClasses.LinkedinNavbarClassName);
+            }
+            catch (Exception ex)
+            {
+                Logger.Print(ex.Message, LogType.INFO);
+            }
         }
 
         /// <summary>
