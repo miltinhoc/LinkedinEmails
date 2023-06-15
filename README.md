@@ -63,7 +63,7 @@ options:
 LinkedinEmails -e example@outlook.com -p 12345 -c twitter -d twitter.com
 ```
 
-If you have 2FA activated on your account, you can specify the -pin argument and provide a authentication code
+If you have 2FA activated on your account, you can specify the -pin argument and provide an authentication code
 ```bash
 LinkedinEmails -e example@outlook.com -p 12345 -c twitter -d twitter.com -pin 274123
 ```
