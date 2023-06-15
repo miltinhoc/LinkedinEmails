@@ -46,7 +46,7 @@ namespace LinkedinEmails
             }
             catch (Exception ex)
             {
-                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
+                Logger.Print(ex.Message, LogType.ERROR);
             }
         }
 
@@ -89,7 +89,7 @@ namespace LinkedinEmails
 
             if (revisions.Count == 0)
             {
-                Logging.Logger.Print("downloading chromium driver...", Logging.LogType.INFO);
+                Logger.Print("downloading chromium driver...", LogType.INFO);
                 await _browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
             }
         }
@@ -100,19 +100,19 @@ namespace LinkedinEmails
         /// <returns>A task that represents the asynchronous initialization operation.</returns>
         public async Task InitAsync()
         {
-            Logging.Logger.Print("initializing...", Logging.LogType.INFO);
+            Logger.Print("initializing...", LogType.INFO);
 
             await CheckAndDownloadRevision();
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
-                Headless = true,
+                Headless = false,
                 DefaultViewport = new ViewPortOptions { Width = 1200, Height = 900}
             });
 
             _browserPage = await _browser.NewPageAsync();
             await _browserPage.SetUserAgentAsync(LinkedinClasses.UserAgent);
 
-            Logging.Logger.Print("initialized with success", Logging.LogType.INFO);
+            Logger.Print("initialized with success", LogType.INFO);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace LinkedinEmails
             if (await WaitFor(className))
             {
                 _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(className));
-                Logging.Logger.Print("found company employees page", Logging.LogType.INFO);
+                Logger.Print("found company employees page", LogType.INFO);
                 return true;
             }
             return false;
@@ -146,7 +146,7 @@ namespace LinkedinEmails
 
             if (!foundCompanyEmployeesPage)
             {
-                Logging.Logger.Print("failed to find company employees page", Logging.LogType.INFO);
+                Logger.Print("failed to find company employees page", LogType.INFO);
             }
         }
 
@@ -164,7 +164,7 @@ namespace LinkedinEmails
                 return true;
             }catch(Exception ex)
             {
-                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
+                Logger.Print(ex.Message, LogType.ERROR);
                 return false;
             }
         }
@@ -179,11 +179,11 @@ namespace LinkedinEmails
         {
             try
             {
-                Logging.Logger.Print("attempting to login...", Logging.LogType.INFO);
+                Logger.Print("attempting to login...", LogType.INFO);
 
                 if (!await VisitAndWaitAsync("https://www.linkedin.com/", LinkedinClasses.IdPasswordInput))
                 {
-                    Logging.Logger.Print("failed to load linkedin", Logging.LogType.ERROR);
+                    Logger.Print("failed to load linkedin", LogType.ERROR);
                     return false;
                 }
 
@@ -197,11 +197,11 @@ namespace LinkedinEmails
             {
                 await _browserPage.ScreenshotAsync("login-failed.png");
 
-                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
+                Logger.Print(ex.Message, LogType.ERROR);
                 return false;
             }
 
-            Logging.Logger.Print("login successful", Logging.LogType.INFO);
+            Logger.Print("login successful", LogType.INFO);
             return true;
         }
 
@@ -220,13 +220,13 @@ namespace LinkedinEmails
                 string page = await _browserPage.EvaluateFunctionAsync<string>(LinkedinClasses.JsGetLastPage);
                 _lastPage = Convert.ToInt32(page);
 
-                Logging.Logger.Print($"found number of pages ({_lastPage})", Logging.LogType.INFO);
+                Logger.Print($"found number of pages ({_lastPage})", LogType.INFO);
 
                 await _browserPage.ScreenshotAsync("a.png");
             }
             catch (Exception ex)
             {
-                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
+                Logger.Print(ex.Message, LogType.ERROR);
             }
         }
 
@@ -237,7 +237,7 @@ namespace LinkedinEmails
                 if (i != 1)
                     ConsoleHelper.ClearLastConsoleLine();
 
-                Logging.Logger.Print($"extracting page {i}/{_lastPage}", Logging.LogType.INFO);
+                Logger.Print($"extracting page {i}/{_lastPage}", LogType.INFO);
 
                 if (!await VisitAndWaitAsync($"{_searchPageLink}&page={i}", LinkedinClasses.ResultEntityClassName))
                 {
@@ -276,24 +276,24 @@ namespace LinkedinEmails
             }
             catch (Exception ex)
             {
-                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
+                Logger.Print(ex.Message, LogType.ERROR);
                 return false;
             }
 
             return true;
         }
 
-        public static async Task ValidateAndSaveEmails(string filepath)
+        public static async Task ValidateAndSaveEmails(string filePath)
         {
             List<ValidEmployee> validEmployeesList = new();
 
-            if (!File.Exists(filepath))
+            if (!File.Exists(filePath))
             {
                 Logger.Print("File not found", LogType.ERROR);
                 return;
             }
 
-            string content = File.ReadAllText(filepath);
+            string content = File.ReadAllText(filePath);
             List<EmployeeDTO> employeeDTOs = JsonConvert.DeserializeObject<List<EmployeeDTO>>(content);
 
             foreach (EmployeeDTO employee in employeeDTOs)
@@ -327,11 +327,11 @@ namespace LinkedinEmails
             try
             {
                 File.WriteAllText(filename, JsonConvert.SerializeObject(obj, Formatting.Indented));
-                Logging.Logger.Print($"saved output to {filename}", Logging.LogType.INFO);
+                Logger.Print($"saved output to {filename}", LogType.INFO);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Print(ex.Message, Logging.LogType.ERROR);
+                Logger.Print(ex.Message, LogType.ERROR);
             }
         }
     }

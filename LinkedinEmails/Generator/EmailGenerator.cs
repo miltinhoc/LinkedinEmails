@@ -14,12 +14,13 @@ namespace LinkedinEmails.Generator
 
             foreach (Employee employee in employees)
             {
-                List<string> temporary = new();
-
-                temporary.Add(GetEmail(employee.FirstName, employee.LastNameLetter.ToString()));
-                temporary.Add(GetEmail(employee.FirstName));
-                temporary.Add(GetEmail(employee.LastName));
-                temporary.Add(GetEmail(employee.FirstName, employee.LastName));
+                List<string> temporary = new()
+                {
+                    GetEmail(employee.FirstName, employee.LastNameLetter.ToString()),
+                    GetEmail(employee.FirstName),
+                    GetEmail(employee.LastName),
+                    GetEmail(employee.FirstName, employee.LastName)
+                };
 
                 employeesDTO.Add(new EmployeeDTO(employee.FullName, temporary));
             }
