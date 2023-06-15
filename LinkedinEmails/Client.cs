@@ -154,6 +154,10 @@ namespace LinkedinEmails
             {
                 Logger.Print("failed to find company employees page", LogType.INFO);
             }
+            else
+            {
+                Logger.Print("found company employees page", LogType.INFO);
+            }
         }
 
         private static string EscapeSpecialCharacters(string input)
@@ -219,7 +223,7 @@ namespace LinkedinEmails
             {
                 if (await WaitFor(".input_verification_pin"))
                 {
-                    Logger.Print("found authentication pin input...", LogType.INFO);
+                    Logger.Print("found authentication pin input", LogType.INFO);
 
                     await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.PinInputClassName}').value ='{pin}'");
                     await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.IdPinSubmitButton}').click()");
