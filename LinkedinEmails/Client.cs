@@ -105,7 +105,7 @@ namespace LinkedinEmails
             await CheckAndDownloadRevision();
             _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
-                Headless = false,
+                Headless = true,
                 DefaultViewport = new ViewPortOptions { Width = 1200, Height = 900}
             });
 
@@ -139,6 +139,8 @@ namespace LinkedinEmails
         /// <returns></returns>
         public async Task SetCompanyPageAsync(string companyName)
         {
+            await _browserPage.WaitForSelectorAsync(LinkedinClasses.LinkedinNavbarClassName);
+
             Logger.Print("trying to visit company's page...", LogType.INFO);
 
             await _browserPage.GoToAsync($"https://www.linkedin.com/company/{EscapeSpecialCharacters(companyName)}");
@@ -223,7 +225,7 @@ namespace LinkedinEmails
                     await _browserPage.EvaluateExpressionAsync($"document.querySelector('{LinkedinClasses.IdPinSubmitButton}').click()");
                 }
 
-                await _browserPage.WaitForSelectorAsync(LinkedinClasses.LinkedinNavbarClassName);
+                //await _browserPage.WaitForSelectorAsync(LinkedinClasses.LinkedinNavbarClassName);
             }
             catch (Exception ex)
             {
