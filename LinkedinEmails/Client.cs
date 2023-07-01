@@ -253,8 +253,6 @@ namespace LinkedinEmails
                 _lastPage = Convert.ToInt32(page);
 
                 Logger.Print($"found number of pages ({_lastPage})", LogType.INFO);
-
-                await _browserPage.ScreenshotAsync("a.png");
             }
             catch (Exception ex)
             {
