@@ -5,6 +5,7 @@
         public static readonly string EmployeesLinkClassName = ".org-top-card-secondary-content__see-all-link";
         public static readonly string EmployeesLinkAllClassName = ".org-top-card-secondary-content__see-all-independent-link a";
         public static readonly string EmployeesLinkInsightClassName = ".org-top-card-secondary-content__insights-improvement a";
+        public static readonly string EmployeesGenericClassName = ".mt1 a[href]";
         public static readonly string LinkedinNavbarClassName = ".global-nav__me";
         public static readonly string ResultEntityClassName = ".entity-result__item";
         public static readonly string SelectorLoginButton = "button.sign-in-form__submit-btn--full-width";
