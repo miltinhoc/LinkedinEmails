@@ -68,7 +68,7 @@ namespace LinkedinEmails
         private static string GenerateJsSearchPage(string selector)
         {
             return $"() =>{{ {selector} }}";
-            return $"() => {{return document.querySelector('{selector}').href;}}";
+            //return $"() => {{return document.querySelector('{selector}').href;}}";
             //return $"() => {{'https://www.linkedin.com/search/results/people/?origin=SHARED_CONNECTIONS_IN_COMPANY_CANNED_SEARCH&network=%22F%22&currentCompany=['+ document.querySelector('.entity-result.pv2').getAttribute('data-chameleon-result-urn').split(':').slice(-1)[0]+ ']';}}";
             //return $"() => {{return document.querySelector('{selector}').href;}}";
         }
