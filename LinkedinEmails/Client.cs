@@ -67,6 +67,7 @@ namespace LinkedinEmails
         /// <returns>A string containing the JavaScript function.</returns>
         private static string GenerateJsSearchPage(string selector)
         {
+            return $"() =>{{ {selector} }}";
             return $"() => {{return document.querySelector('{selector}').href;}}";
             //return $"() => {{'https://www.linkedin.com/search/results/people/?origin=SHARED_CONNECTIONS_IN_COMPANY_CANNED_SEARCH&network=%22F%22&currentCompany=['+ document.querySelector('.entity-result.pv2').getAttribute('data-chameleon-result-urn').split(':').slice(-1)[0]+ ']';}}";
             //return $"() => {{return document.querySelector('{selector}').href;}}";
@@ -126,7 +127,8 @@ namespace LinkedinEmails
         {
             if (await WaitFor(className))
             {
-                _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(className));
+                var script = "var e=document.querySelectorAll(\"a\");for(let r=0;r<e.length;r++)if(e[r].href.includes(\"/search/results/people/?currentCompany=\"))return e[r].href;return\"\"";
+                _searchPageLink = await _browserPage.EvaluateFunctionAsync<string>(GenerateJsSearchPage(script));
                 Logger.Print("found company employees page", LogType.INFO);
                 return true;
             }
@@ -148,10 +150,11 @@ namespace LinkedinEmails
             await _browserPage.GoToAsync($"https://www.linkedin.com/company/{EscapeSpecialCharacters(companyName)}");
 
             bool foundCompanyEmployeesPage =
-                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesGenericClassName) ||
-                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkAllClassName) || 
-                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkClassName) ||
-                await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkInsightClassName);
+                await FindCompanyEmployeesPageAsync(".org-company-follow-button");
+                //||
+                //await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkAllClassName) || 
+                //await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkClassName) ||
+                //await FindCompanyEmployeesPageAsync(LinkedinClasses.EmployeesLinkInsightClassName);
 
             if (!foundCompanyEmployeesPage)
             {
