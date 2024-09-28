@@ -1,4 +1,5 @@
-﻿using LinkedinEmails.Generator;
+﻿using System.Text;
+using LinkedinEmails.Generator;
 using LinkedinEmails.Model;
 using Newtonsoft.Json;
 using PuppeteerSharp;
@@ -197,7 +198,7 @@ namespace LinkedinEmails
             
             try
             {
-                if (!await VisitAndWaitAsync("https://www.linkedin.com/", LinkedinClasses.IdPasswordInput))
+                if (!await VisitAndWaitAsync("https://www.linkedin.com/login", LinkedinClasses.IdPasswordInput))
                 {
                     Logger.Print("failed to load linkedin", LogType.ERROR);
                     return false;
@@ -362,7 +363,7 @@ namespace LinkedinEmails
 
             try
             {
-                File.WriteAllText(filename, JsonConvert.SerializeObject(obj, Formatting.Indented));
+                File.WriteAllText(filename, JsonConvert.SerializeObject(obj, Formatting.Indented), Encoding.UTF8);
                 Logger.Print($"saved output to {filename}", LogType.INFO);
             }
             catch (Exception ex)
