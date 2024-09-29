@@ -60,7 +60,7 @@
                 return true;
             }
 
-            if (args.Length < 8)
+            if (args.Length < 6)
             {
                 Console.WriteLine($" [*] Invalid number of arguments.\n{_usage}");
                 return false;
@@ -90,16 +90,52 @@
                 }
             }
 
-            if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(CompanyName) || string.IsNullOrEmpty(Domain))
-            {
-                Console.WriteLine($" [*] Missing required argument(s).\n{_usage}");
-                return false;
-            }
+	    if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(CompanyName) || string.IsNullOrEmpty(Domain))
+	    {
+    		Console.WriteLine($" [*] Missing required argument(s).\n{_usage}");
+    		return false;
+	    }
 
+	    if (string.IsNullOrEmpty(Password))
+	    {
+    		Console.Write(" [*] Please enter your LinkedIn password: ");
+    		Password = ReadPassword();
+	    
+    	    if (string.IsNullOrEmpty(Password))
+    	    {
+        	Console.WriteLine(" [*] LinkedIn Password is required.");
+        	return false;
+    	   }
+	    }
             return true;
         }
+	private static string ReadPassword()
+	{
+    		string password = "";
+    		ConsoleKeyInfo key;
 
-        private static void ShowHelp()
+    		do
+    		{
+        	key = Console.ReadKey(true);
+
+        	// Ignore any keys like Enter, Backspace, etc.
+       		 if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+        		{
+            		password += key.KeyChar;
+            		Console.Write("*");  // Display asterisks to mask input
+        		}
+        	else if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+        		{
+            		password = password[0..^1]; // Remove the last character from the password
+            		Console.Write("\b \b");  // Remove a character from the console
+        		}
+    		} while (key.Key != ConsoleKey.Enter);
+
+		Console.WriteLine();  // Move to the next line after pressing Enter
+   		return password;
+	}	
+        
+	private static void ShowHelp()
         {
             string c = @"Usage: LinkedinEmails [-options]
 
