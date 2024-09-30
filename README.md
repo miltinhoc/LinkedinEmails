@@ -49,7 +49,6 @@ Usage: LinkedinEmails [-options]
 
 options:
 	-e <email>		your linkedin account email
-	-p <password>		your linkedin account password
 	-c <company name>	linkedin company email 
 	-d <company domain>	email domain	
 	-v			tries to validate the emails
@@ -60,12 +59,12 @@ options:
 
 ### Example
 ```bash
-LinkedinEmails -e example@outlook.com -p 12345 -c twitter -d twitter.com
+LinkedinEmails -e example@outlook.com -c twitter -d twitter.com
 ```
 
 If you have 2FA activated on your account, you can specify the -pin argument and provide an authentication code
 ```bash
-LinkedinEmails -e example@outlook.com -p 12345 -c twitter -d twitter.com -pin 274123
+LinkedinEmails -e example@outlook.com -c twitter -d twitter.com -pin 274123
 ```
 
 Validating emails:
