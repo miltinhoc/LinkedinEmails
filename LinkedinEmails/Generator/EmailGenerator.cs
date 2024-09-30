@@ -19,8 +19,9 @@ namespace LinkedinEmails.Generator
                     GetEmail(employee.FirstName, employee.LastNameLetter.ToString()),
                     GetEmail(employee.FirstName),
                     GetEmail(employee.LastName),
-                    GetEmail(employee.FirstName, employee.LastName)
-                };
+                    GetEmail(employee.FirstName, employee.LastName),
+                    GetEmail(employee.FirstNameLetter, employee.LastName)
+		};
 
                 employeesDTO.Add(new EmployeeDTO(employee.FullName, temporary));
             }
@@ -31,5 +32,7 @@ namespace LinkedinEmails.Generator
         private string GetEmail(string part) => $"{part}@{_domain}";
      
         private string GetEmail(string part1, string part2) => $"{part1}.{part2}@{_domain}";
+    
+    	private string GetEmail(char part1, string part2) => $"{part1}{part2}@{_domain}";
     }
 }

@@ -8,10 +8,10 @@
         public static readonly string EmployeesGenericClassName = ".mt1 a[href]";
         public static readonly string LinkedinNavbarClassName = ".global-nav__me";
         public static readonly string ResultEntityClassName = ".entity-result__divider";
-        public static readonly string SelectorLoginButton = "button.sign-in-form__submit-btn--full-width";
+        public static readonly string SelectorLoginButton = "button.btn__primary--large";
         public static readonly string PageSelectorClassName = ".artdeco-pagination__indicator";
-        public static readonly string IdEmailInput = "#session_key";
-        public static readonly string IdPasswordInput = "#session_password";
+        public static readonly string IdEmailInput = "#username";
+        public static readonly string IdPasswordInput = "#password";
         public static readonly string PinInputClassName = ".input_verification_pin";
         public static readonly string IdPinSubmitButton = "#two-step-submit-button";
 
